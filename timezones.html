@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>World Time Converter</title>
+<style>
+    .time-card {
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 10px;
+        display: inline-block;
+    }
+    label, button {
+        margin-top: 10px;
+        display: block;
+    }
+</style>
+</head>
+<body>
+    <h2>Time in Different Cities</h2>
+    <div class="time-card" id="hyderabad">
+        <h3>Hyderabad</h3>
+        <div id="timeHyderabad"></div>
+        <label for="inputHyderabad">Convert time:</label>
+        <input type="time" id="inputHyderabad">
+        <button onclick="convertUserTime('Asia/Kolkata', 'inputHyderabad', 'convertedHyderabad')">Convert</button>
+        <div id="convertedHyderabad"></div>
+    </div>
+    <div class="time-card" id="newYork">
+        <h3>New York</h3>
+        <div id="timeNewYork"></div>
+        <label for="inputNewYork">Convert time:</label>
+        <input type="time" id="inputNewYork">
+        <button onclick="convertUserTime('America/New_York', 'inputNewYork', 'convertedNewYork')">Convert</button>
+        <div id="convertedNewYork"></div>
+    </div>
+    <div class="time-card" id="dallas">
+        <h3>Dallas</h3>
+        <div id="timeDallas"></div>
+        <label for="inputDallas">Convert time:</label>
+        <input type="time" id="inputDallas">
+        <button onclick="convertUserTime('America/Chicago', 'inputDallas', 'convertedDallas')">Convert</button>
+        <div id="convertedDallas"></div>
+    </div>
+    <div class="time-card" id="seattle">
+        <h3>Seattle</h3>
+        <div id="timeSeattle"></div>
+        <label for="inputSeattle">Convert time:</label>
+        <input type="time" id="inputSeattle">
+        <button onclick="convertUserTime('America/Los_Angeles', 'inputSeattle', 'convertedSeattle')">Convert</button>
+        <div id="convertedSeattle"></div>
+    </div>
+    <div class="time-card" id="phoenix">
+        <h3>Phoenix</h3>
+        <div id="timePhoenix"></div>
+        <label for="inputPhoenix">Convert time:</label>
+        <input type="time" id="inputPhoenix">
+        <button onclick="convertUserTime('America/Phoenix', 'inputPhoenix', 'convertedPhoenix')">Convert</button>
+        <div id="convertedPhoenix"></div>
+    </div>
+    <div class="time-card" id="denver">
+        <h3>Denver</h3>
+        <div id="timeDenver"></div>
+        <label for="inputDenver">Convert time:</label>
+        <input type="time" id="inputDenver">
+        <button onclick="convertUserTime('America/Denver', 'inputDenver', 'convertedDenver')">Convert</button>
+        <div id="convertedDenver"></div>
+    </div>
+
+    <script>
+        function updateTime() {
+            document.getElementById('timeHyderabad').innerText = `Current time: ${formatTime('Asia/Kolkata')}`;
+            document.getElementById('timeNewYork').innerText = `Current time: ${formatTime('America/New_York')}`;
+            document.getElementById('timeDallas').innerText = `Current time: ${formatTime('America/Chicago')}`;
+            document.getElementById('timeSeattle').innerText = `Current time: ${formatTime('America/Los_Angeles')}`;
+            document.getElementById('timePhoenix').innerText = `Current time: ${formatTime('America/Phoenix')}`;
+            document.getElementById('timeDenver').innerText = `Current time: ${formatTime('America/Denver')}`;
+        }
+
+        function formatTime(timezone) {
+            return new Intl.DateTimeFormat('en-US', { 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                timeZone: timezone, hour12: false 
+            }).format(new Date());
+        }
+
+        function convertUserTime(timezone, inputId, outputId) {
+            const userTime = document.getElementById(inputId).value;
+            const userDate = new Date();
+            userDate.setHours(userTime.split(':')[0], userTime.split(':')[1], 0);
+
+            document.getElementById(outputId).innerText = `Converted time: ${new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+                timeZone: timezone, hour12: false 
+            }).format(userDate)}`;
+        }
+
+        setInterval(updateTime, 1000);  // Update the time every second
+    </script>
+</body>
+</html>
