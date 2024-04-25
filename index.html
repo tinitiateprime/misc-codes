@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>World Time Zone Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .timezone {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, button {
+            padding: 10px;
+            margin-top: 5px;
+            width: 50%;
+            display: block;
+        }
+        label {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Time Zone Converter</h1>
+    <div class="timezone">
+        <label for="inputTime">Enter Time:</label>
+        <input type="time" id="inputTime" value="12:00">
+        <label for="inputTimeZone">Select Time Zone:</label>
+        <select id="inputTimeZone">
+            <option value="UTC">UTC</option>
+            <option value="America/New_York">New York (Eastern Time)</option>
+            <option value="Europe/London">London (GMT)</option>
+            <option value="Asia/Tokyo">Tokyo (Japan Time)</option>
+            <option value="Australia/Sydney">Sydney (AEDT)</option>
+        </select>
+        <button onclick="convertTime()">Convert Time</button>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        const timeZones = [
+            "UTC", 
+            "America/New_York", 
+            "Europe/London", 
+            "Asia/Tokyo", 
+            "Australia/Sydney"
+        ];
+
+        function convertTime() {
+            const inputTime = document.getElementById('inputTime').value;
+            const inputTimeZone = document.getElementById('inputTimeZone').value;
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = ''; // Clear previous results
+
+            const baseTime = new Date(`1970-01-01T${inputTime}:00+00:00`);
+
+            timeZones.forEach(zone => {
+                const timeInZone = new Intl.DateTimeFormat('en-US', {
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    timeZone: zone, hour12: false
+                }).format(baseTime);
+
+                const zoneDiv = document.createElement('div');
+                zoneDiv.className = 'timezone';
+                zoneDiv.innerHTML = `<strong>Time in ${zone}:</strong> ${timeInZone}`;
+                resultsContainer.appendChild(zoneDiv);
+            });
+        }
+    </script>
+</body>
+</html>
