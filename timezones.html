@@ -22,77 +22,88 @@
         <h3>Hyderabad</h3>
         <div id="timeHyderabad"></div>
         <label for="inputHyderabad">Convert time:</label>
-        <input type="time" id="inputHyderabad">
-        <button onclick="convertUserTime('Asia/Kolkata', 'inputHyderabad', 'convertedHyderabad')">Convert</button>
+        <input type="time" id="inputHyderabad" onchange="convertUserTime('Asia/Kolkata', this.value)">
         <div id="convertedHyderabad"></div>
     </div>
     <div class="time-card" id="newYork">
         <h3>New York</h3>
         <div id="timeNewYork"></div>
         <label for="inputNewYork">Convert time:</label>
-        <input type="time" id="inputNewYork">
-        <button onclick="convertUserTime('America/New_York', 'inputNewYork', 'convertedNewYork')">Convert</button>
+        <input type="time" id="inputNewYork" onchange="convertUserTime('America/New_York', this.value)">
         <div id="convertedNewYork"></div>
     </div>
     <div class="time-card" id="dallas">
         <h3>Dallas</h3>
         <div id="timeDallas"></div>
         <label for="inputDallas">Convert time:</label>
-        <input type="time" id="inputDallas">
-        <button onclick="convertUserTime('America/Chicago', 'inputDallas', 'convertedDallas')">Convert</button>
+        <input type="time" id="inputDallas" onchange="convertUserTime('America/Chicago', this.value)">
         <div id="convertedDallas"></div>
     </div>
     <div class="time-card" id="seattle">
         <h3>Seattle</h3>
         <div id="timeSeattle"></div>
         <label for="inputSeattle">Convert time:</label>
-        <input type="time" id="inputSeattle">
-        <button onclick="convertUserTime('America/Los_Angeles', 'inputSeattle', 'convertedSeattle')">Convert</button>
+        <input type="time" id="inputSeattle" onchange="convertUserTime('America/Los_Angeles', this.value)">
         <div id="convertedSeattle"></div>
     </div>
     <div class="time-card" id="phoenix">
         <h3>Phoenix</h3>
         <div id="timePhoenix"></div>
         <label for="inputPhoenix">Convert time:</label>
-        <input type="time" id="inputPhoenix">
-        <button onclick="convertUserTime('America/Phoenix', 'inputPhoenix', 'convertedPhoenix')">Convert</button>
+        <input type="time" id="inputPhoenix" onchange="convertUserTime('America/Phoenix', this.value)">
         <div id="convertedPhoenix"></div>
     </div>
     <div class="time-card" id="denver">
         <h3>Denver</h3>
         <div id="timeDenver"></div>
         <label for="inputDenver">Convert time:</label>
-        <input type="time" id="inputDenver">
-        <button onclick="convertUserTime('America/Denver', 'inputDenver', 'convertedDenver')">Convert</button>
+        <input type="time" id="inputDenver" onchange="convertUserTime('America/Denver', this.value)">
         <div id="convertedDenver"></div>
     </div>
 
     <script>
+        const timeZones = {
+            'hyderabad': 'Asia/Kolkata',
+            'newYork': 'America/New_York',
+            'dallas': 'America/Chicago',
+            'seattle': 'America/Los_Angeles',
+            'phoenix': 'America/Phoenix',
+            'denver': 'America/Denver'
+        };
+
         function updateTime() {
-            document.getElementById('timeHyderabad').innerText = `Current time: ${formatTime('Asia/Kolkata')}`;
-            document.getElementById('timeNewYork').innerText = `Current time: ${formatTime('America/New_York')}`;
-            document.getElementById('timeDallas').innerText = `Current time: ${formatTime('America/Chicago')}`;
-            document.getElementById('timeSeattle').innerText = `Current time: ${formatTime('America/Los_Angeles')}`;
-            document.getElementById('timePhoenix').innerText = `Current time: ${formatTime('America/Phoenix')}`;
-            document.getElementById('timeDenver').innerText = `Current time: ${formatTime('America/Denver')}`;
+            Object.keys(timeZones).forEach(key => {
+                document.getElementById(`time${capitalize(key)}`).innerText = `Current time: ${formatTime(timeZones[key])}`;
+            });
         }
 
         function formatTime(timezone) {
-            return new Intl.DateTimeFormat('en-US', { 
-                hour: '2-digit', minute: '2-digit', second: '2-digit', 
+            return new Intl.DateTimeFormat('en-US', {
+                year: 'numeric', month: 'numeric', day: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
                 timeZone: timezone, hour12: false 
             }).format(new Date());
         }
 
-        function convertUserTime(timezone, inputId, outputId) {
-            const userTime = document.getElementById(inputId).value;
-            const userDate = new Date();
-            userDate.setHours(userTime.split(':')[0], userTime.split(':')[1], 0);
+        function convertUserTime(baseTimeZone, userTime) {
+            if (!userTime) return; // Avoid processing empty input
+            const date = new Date();
+            const userDate = new Date(date.toLocaleString('en-US', {timeZone: baseTimeZone}));
+            userDate.setHours(parseInt(userTime.substr(0, 2)), parseInt(userTime.substr(3, 2)), 0);
+            const userDateTimeUTC = userDate.toISOString();
 
-            document.getElementById(outputId).innerText = `Converted time: ${new Intl.DateTimeFormat('en-US', {
-                hour: '2-digit', minute: '2-digit', second: '2-digit', 
-                timeZone: timezone, hour12: false 
-            }).format(userDate)}`;
+            Object.keys(timeZones).forEach(key => {
+                const convertedTime = new Intl.DateTimeFormat('en-US', {
+                    year: 'numeric', month: 'numeric', day: 'numeric',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    timeZone: timeZones[key], hour12: false
+                }).format(new Date(userDateTimeUTC));
+                document.getElementById(`converted${capitalize(key)}`).innerText = `Converted time: ${convertedTime}`;
+            });
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
         }
 
         setInterval(updateTime, 1000);  // Update the time every second
